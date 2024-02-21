@@ -1,0 +1,27 @@
+import { NextApiHandler } from 'next';
+import NextAuth from 'next-auth';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import GitHubProvider from 'next-auth/providers/github';
+import prisma from '../../../lib/prisma';
+
+const authHandler: NextApiHandler = async (req, res) => {
+    try {
+      console.log("auth handler called");
+      await NextAuth(req, res, options);
+    } catch (error) {
+      console.error("Authentication error:", error);
+      res.status(500).json({ error: 'Authentication error' });
+    }
+};
+export default authHandler;
+
+const options = {
+  providers: [
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET,
+    }),
+  ],
+  adapter: PrismaAdapter(prisma),
+  secret: process.env.SECRET,
+};
